@@ -1,8 +1,4 @@
-﻿# New Architecture Project
-
-This folder was generated from the previous `FakeImageDetector` codebase and remapped to the new architecture in `新版專題架構.md`.
-
-## Run API (local)
+﻿## Run API (local)
 
 ```bash
 python api/app.py

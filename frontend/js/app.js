@@ -72,17 +72,33 @@ function resetAll() {
 
 function formatAnalysisResult(data) {
   const gateOk = data?.gate_details?.is_valid;
+  const gateReasons = data?.gate_details?.reasons || [];
+  const enhanceAttempts = data?.gate_details?.enhancement_attempts;
   const riskLevel = data?.content?.risk_level ?? 'unknown';
   const riskScore = data?.content?.risk_score;
+  const routeDecision = data?.vision?.route_decision;
+  const yoloObjects = data?.vision?.yolo_objects || [];
   const faceCount = data?.vision?.scrfd_face_count;
   const truforScore = data?.vision?.trufor_score;
   const truforErr = data?.vision?.trufor_error;
   const tampered = data?.vision?.is_tampered;
+  const deepfakeMaxProb = data?.vision?.deepfake_max_prob;
+  const deepfakeErr = data?.vision?.deepfake_error;
 
   const lines = [];
   lines.push(`流程狀態：${data?.status ?? 'unknown'}`);
   if (typeof gateOk === 'boolean') lines.push(`品質檢查：${gateOk ? '通過' : '未通過'}`);
+  if (typeof enhanceAttempts === 'number') lines.push(`畫質補救次數：${enhanceAttempts}`);
+  if (gateReasons.length > 0) lines.push(`品質問題：${gateReasons.join(', ')}`);
+  if (routeDecision) lines.push(`分流路徑：${routeDecision}`);
+  lines.push(`YOLO 物件數：${yoloObjects.length}`);
+  if (yoloObjects.length > 0) {
+    const topLabels = yoloObjects.slice(0, 5).map((o) => `${o.label}(${o.confidence})`);
+    lines.push(`YOLO 前5項：${topLabels.join(', ')}`);
+  }
   if (typeof faceCount === 'number') lines.push(`SCRFD 人臉數：${faceCount}`);
+  if (typeof deepfakeMaxProb === 'number') lines.push(`Deepfake 最大機率：${deepfakeMaxProb.toFixed(6)}`);
+  if (deepfakeErr) lines.push(`Deepfake：${deepfakeErr}`);
   if (typeof truforScore === 'number') {
     lines.push(`TruFor 分數：${truforScore.toFixed(6)} (${tampered ? '疑似篡改' : '偏正常'})`);
   } else if (truforErr) {

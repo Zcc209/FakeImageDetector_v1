@@ -1,0 +1,9 @@
+﻿flask
+flask-cors
+numpy
+opencv-python
+pillow
+requests
+pyyaml
+onnxruntime
+insightface

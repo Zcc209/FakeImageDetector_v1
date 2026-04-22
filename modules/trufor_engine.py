@@ -62,6 +62,11 @@ class TruForEngine:
     def _build_cmd(self, img_path: Path, out_dir: Path) -> list[str]:
         env_prefix = self.settings.get("TRUFOR_ENV_PREFIX", "")
         cmd = [self.settings.get("TRUFOR_MICROMAMBA_BIN", "micromamba"), "run"]
+        input_arg = str(img_path)
+        if img_path.is_dir() and not input_arg.endswith(("/", "\\")):
+            # TruFor test.py strips only leading "/" from sub-paths; a trailing
+            # separator here avoids generating paths like "\file.jpg" on Windows.
+            input_arg = input_arg + os.sep
 
         if env_prefix:
             cmd.extend(["-p", env_prefix])
@@ -75,7 +80,7 @@ class TruForEngine:
                 "-g",
                 str(self.settings.get("TRUFOR_GPU", 0)),
                 "-in",
-                str(img_path),
+                input_arg,
                 "-out",
                 str(out_dir),
                 "-exp",
@@ -85,6 +90,19 @@ class TruForEngine:
             ]
         )
         return cmd
+
+    @staticmethod
+    def _latest_npz(out_dir: Path, started_at: float) -> Path | None:
+        candidates: list[Path] = []
+        for p in out_dir.glob("*.npz"):
+            try:
+                if p.stat().st_mtime >= started_at:
+                    candidates.append(p)
+            except OSError:
+                continue
+        if not candidates:
+            return None
+        return max(candidates, key=lambda p: p.stat().st_mtime)
 
     def run(self, img_array_rgb: np.ndarray) -> dict[str, Any]:
         if not self.settings.get("TRUFOR_ENABLED", False):
@@ -105,19 +123,22 @@ class TruForEngine:
         out_dir.mkdir(parents=True, exist_ok=True)
 
         ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        req_in_dir = in_dir / ts
+        req_in_dir.mkdir(parents=True, exist_ok=True)
         img_name = f"trufor_{ts}.jpg"
-        img_path = in_dir / img_name
-        npz_path = out_dir / f"{img_name}.npz"
+        img_path = req_in_dir / img_name
+        npz_path = out_dir / f"trufor_{ts}.npz"
 
         Image.fromarray(img_array_rgb).save(img_path)
 
-        cmd = self._build_cmd(img_path, out_dir)
+        cmd = self._build_cmd(req_in_dir, out_dir)
 
         env = os.environ.copy()
         mamba_root = self.settings.get("TRUFOR_MAMBA_ROOT_PREFIX")
         if mamba_root:
             env["MAMBA_ROOT_PREFIX"] = mamba_root
 
+        started_at = datetime.now().timestamp()
         try:
             cp = subprocess.run(
                 cmd,
@@ -126,6 +147,8 @@ class TruForEngine:
                 capture_output=True,
                 text=True,
                 env=env,
+                encoding='utf-8',
+                errors='replace'
             )
         except subprocess.CalledProcessError as exc:  # pragma: no cover - env dependent
             return {
@@ -141,12 +164,17 @@ class TruForEngine:
             }
 
         if not npz_path.exists():
-            return {
-                "trufor_enabled": True,
-                "trufor_score": None,
-                "trufor_error": f"NPZ output missing: {npz_path}",
-                "trufor_stdout_tail": cp.stdout[-500:] if cp.stdout else "",
-            }
+            latest_npz = self._latest_npz(out_dir, started_at)
+            if latest_npz is not None:
+                npz_path = latest_npz
+            else:
+                return {
+                    "trufor_enabled": True,
+                    "trufor_score": None,
+                    "trufor_error": f"NPZ output missing: {npz_path}",
+                    "trufor_stdout_tail": cp.stdout[-1200:] if cp.stdout else "",
+                    "trufor_stderr_tail": cp.stderr[-1200:] if cp.stderr else "",
+                }
 
         try:
             npz = np.load(npz_path)

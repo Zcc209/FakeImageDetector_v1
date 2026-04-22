@@ -1,0 +1,107 @@
+{
+  "status": "success",
+  "metadata": {
+    "source": "input\\2.jpg",
+    "processed_shape": [
+      181,
+      278,
+      3
+    ]
+  },
+  "gate_details": {
+    "is_valid": true,
+    "reasons": [],
+    "reason_details": [],
+    "metrics": {
+      "resolution": [
+        278,
+        181
+      ],
+      "blur_score": 2601.62,
+      "brightness": 150.01,
+      "block_boundary_diff_mean": 14.296,
+      "block_non_boundary_diff_mean": 12.407,
+      "blockiness_ratio": 1.152
+    },
+    "applied_thresholds": {
+      "min_width": 150,
+      "min_height": 150,
+      "min_blur_score": 80.0,
+      "min_brightness": 30.0,
+      "max_brightness": 240.0,
+      "max_blockiness_ratio": 1.8,
+      "enable_compression_check": true
+    }
+  },
+  "vision": {
+    "yolo_objects": [
+      {
+        "label": "person",
+        "confidence": 0.95,
+        "box": [
+          0,
+          0,
+          10,
+          10
+        ]
+      }
+    ],
+    "scrfd_face_count": 4,
+    "scrfd_faces": [
+      {
+        "box": [
+          98,
+          12,
+          120,
+          39
+        ],
+        "score": 0.8762
+      },
+      {
+        "box": [
+          211,
+          26,
+          236,
+          64
+        ],
+        "score": 0.85
+      },
+      {
+        "box": [
+          172,
+          49,
+          190,
+          72
+        ],
+        "score": 0.8177
+      },
+      {
+        "box": [
+          50,
+          8,
+          77,
+          50
+        ],
+        "score": 0.771
+      }
+    ],
+    "trufor_enabled": true,
+    "trufor_score": 0.745126,
+    "trufor_npz": "C:\\Users\\linzi\\Downloads\\FakeImageDetector_NewArch\\runs\\trufor_out\\trufor_20260422_134755_792763.jpg.npz",
+    "is_tampered": true,
+    "trufor_map_shape": [
+      181,
+      278
+    ],
+    "trufor_conf_shape": [
+      181,
+      278
+    ]
+  },
+  "content": {
+    "ocr_text": "發現高風險文字",
+    "risk_score": 0.3,
+    "risk_level": "low",
+    "explanation": "module_c placeholder"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "status": "success",
+  "metadata": {
+    "source": "input\\2.jpg",
+    "processed_shape": [
+      181,
+      278,
+      3
+    ]
+  },
+  "gate_details": {
+    "is_valid": true,
+    "reasons": [],
+    "reason_details": [],
+    "metrics": {
+      "resolution": [
+        278,
+        181
+      ],
+      "blur_score": 2601.62,
+      "brightness": 150.01,
+      "block_boundary_diff_mean": 14.296,
+      "block_non_boundary_diff_mean": 12.407,
+      "blockiness_ratio": 1.152
+    },
+    "applied_thresholds": {
+      "min_width": 150,
+      "min_height": 150,
+      "min_blur_score": 80.0,
+      "min_brightness": 30.0,
+      "max_brightness": 240.0,
+      "max_blockiness_ratio": 1.8,
+      "enable_compression_check": true
+    }
+  },
+  "vision": {
+    "yolo_objects": [
+      {
+        "label": "person",
+        "confidence": 0.95,
+        "box": [
+          0,
+          0,
+          10,
+          10
+        ]
+      }
+    ],
+    "scrfd_face_count": 4,
+    "scrfd_faces": [
+      {
+        "box": [
+          98,
+          12,
+          120,
+          39
+        ],
+        "score": 0.8762
+      },
+      {
+        "box": [
+          211,
+          26,
+          236,
+          64
+        ],
+        "score": 0.85
+      },
+      {
+        "box": [
+          172,
+          49,
+          190,
+          72
+        ],
+        "score": 0.8177
+      },
+      {
+        "box": [
+          50,
+          8,
+          77,
+          50
+        ],
+        "score": 0.771
+      }
+    ],
+    "trufor_enabled": true,
+    "trufor_score": null,
+    "trufor_error": "NPZ output missing: C:\\Users\\linzi\\Downloads\\FakeImageDetector_NewArch\\runs\\trufor_out\\trufor_20260422_134546_610232.npz",
+    "trufor_stdout_tail": "=> loading model from C:\\Users\\linzi\\Downloads\\FakeImageDetector_NewArch\\models\\trufor\\pretrained_models\\trufor.pth.tar\nEpoch: 81\n",
+    "trufor_stderr_tail": " from {__name__} is deprecated, please import via timm.layers\", FutureWarning)\n\n  0%|          | 0/1 [00:00<?, ?it/s]Traceback (most recent call last):\n  File \"C:\\Users\\linzi\\Downloads\\FakeImageDetector_NewArch\\models\\trufor\\TruFor_train_test\\test.py\", line 150, in <module>\n    np.savez(filename_out, **out_dict)\n  File \"C:\\Users\\linzi\\AppData\\Local\\micromamba\\envs\\trufor\\lib\\site-packages\\numpy\\lib\\_npyio_impl.py\", line 683, in savez\n    _savez(file, args, kwds, False, allow_pickle=allow_pickle)\n  File \"C:\\Users\\linzi\\AppData\\Local\\micromamba\\envs\\trufor\\lib\\site-packages\\numpy\\lib\\_npyio_impl.py\", line 789, in _savez\n    zipf = zipfile_factory(file, mode=\"w\", compression=compression)\n  File \"C:\\Users\\linzi\\AppData\\Local\\micromamba\\envs\\trufor\\lib\\site-packages\\numpy\\lib\\_npyio_impl.py\", line 103, in zipfile_factory\n    return zipfile.ZipFile(file, *args, **kwargs)\n  File \"C:\\Users\\linzi\\AppData\\Local\\micromamba\\envs\\trufor\\lib\\zipfile.py\", line 1270, in __init__\n    self.fp = io.open(file, filemode)\nPermissionError: [Errno 13] Permission denied: 'C:\\\\trufor_20260422_134546_610232.jpg.npz'\n\n100%|██████████| 1/1 [00:02<00:00,  2.25s/it]\n100%|██████████| 1/1 [00:02<00:00,  2.25s/it]\n"
+  },
+  "content": {
+    "ocr_text": "發現高風險文字",
+    "risk_score": 0.3,
+    "risk_level": "low",
+    "explanation": "module_c placeholder"
+  }
+}
